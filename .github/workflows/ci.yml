@@ -1,0 +1,57 @@
+# Tests phortos on Linux, where it and phortosctl run, with the race detector; checks formatting,
+# vet and known vulnerabilities; and builds phortos with the phortosctl binaries it hands out, as a
+# release does.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+      - run: go vet ./...
+      - name: test, with the race detector
+        run: go test -race -count=1 ./...
+
+  vulnerabilities:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: phortosctl for every platform phortos hands it out for
+        run: go generate ./internal/frontdoor/setup/dist
+      - name: phortos with them built in, for both platforms
+        run: |
+          set -eu
+          for arch in amd64 arm64; do
+            CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -trimpath -o /tmp/phortos-$arch ./cmd/phortos
+          done
+          /tmp/phortos-amd64 --version

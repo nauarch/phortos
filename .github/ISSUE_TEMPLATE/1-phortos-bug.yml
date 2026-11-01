@@ -1,0 +1,76 @@
+name: phortos bug
+description: The cache misbehaves - updates fail, are slow, serve the wrong thing, or phortos will not run
+labels: [bug, phortos]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Before pasting anything, remove what you would not publish:
+        addresses, host names, the pin, repository credentials. Keep only what the bug needs.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The smallest steps that show it. The repository and package that trigger it help a lot.
+      placeholder: |
+        1. phortos running with --max-size=100G, download.docker.com intercepted
+        2. apt-get install docker-ce on a host configured by phortosctl
+        3. apt fails with ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: phortos version
+      description: Output of `phortos --version`, or the version in `/metrics` (`phortos_build_info`).
+      placeholder: phortos v0.1.0 (https://github.com/nauarch/phortos, Apache-2.0)
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: phortos' settings
+      description: The config file (`/etc/phortos/phortos.yaml`) and the unit's command line (`systemctl cat phortos`).
+      render: yaml
+    validations:
+      required: false
+
+  - type: input
+    id: client
+    attributes:
+      label: The client
+      description: Distribution and apt version of the host updating (`apt --version`).
+      placeholder: Debian 13, apt 3.0.3
+    validations:
+      required: true
+
+  - type: input
+    id: repository
+    attributes:
+      label: Repository
+      description: Which repository host it concerns, and whether it is plain HTTP or intercepted.
+      placeholder: download.docker.com (intercepted)
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        phortos' log around the failure (`journalctl -u phortos --since "-15min"`), and apt's
+        output. Formatted as code automatically.
+      render: text
+    validations:
+      required: false

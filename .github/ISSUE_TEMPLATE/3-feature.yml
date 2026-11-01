@@ -1,0 +1,52 @@
+name: Feature request
+description: Something phortos or phortosctl should do that it does not
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do, and why phortos gets in the way or cannot do it today.
+      placeholder: |
+        Our build containers run apt-get inside Dockerfiles, and phortos only serves hosts that
+        phortosctl configured.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: How it could work, from your side - flags, commands, behaviour.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: part
+    attributes:
+      label: Part
+      options:
+        - phortos (the cache)
+        - phortosctl (configuring hosts)
+        - HTTPS interception and the trust model
+        - Setup
+        - Metrics and operations
+        - A new distribution or repository type
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: What you do today instead, or other ways you considered.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        phortos depends on the Go standard library, plus one module to read its config file. A
+        proposal needing another third-party module needs a strong case; say why the standard
+        library cannot do it.

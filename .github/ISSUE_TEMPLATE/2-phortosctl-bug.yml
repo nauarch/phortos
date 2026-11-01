@@ -1,0 +1,60 @@
+name: phortosctl bug
+description: plan, configure, unconfigure, verify, refresh, upgrade or detect does the wrong thing
+labels: [bug, phortosctl]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. `phortosctl plan` output describes the host and shows the pin:
+        remove addresses, host names and anything else you would not publish.
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: Command
+      options:
+        - plan
+        - configure
+        - unconfigure
+        - verify
+        - refresh (before apt update)
+        - upgrade
+        - detect (apt's proxy choice)
+        - setup script (/setup)
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command line you ran, what you expected, and what happened instead.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: phortosctl version
+      description: Output of `/usr/local/lib/phortos/phortosctl version`.
+      placeholder: phortosctl v0.1.0 (https://github.com/nauarch/phortos, Apache-2.0)
+    validations:
+      required: true
+
+  - type: input
+    id: host
+    attributes:
+      label: Host
+      description: Distribution, apt version and architecture.
+      placeholder: Ubuntu 24.04, apt 2.8.3, amd64
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: What phortosctl and apt printed, and `phortosctl plan` for the host if it helps. Formatted as code automatically.
+      render: text
+    validations:
+      required: false
