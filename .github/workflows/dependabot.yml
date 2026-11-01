@@ -1,0 +1,24 @@
+# Lets Dependabot's patch and minor updates merge themselves: on each of its pull requests this
+# turns on squash auto-merge, and GitHub merges once the checks main requires have passed. Major
+# updates wait for a person. Nothing is released by a merge; releases come from tags.
+name: dependabot
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - id: meta
+        uses: dependabot/fetch-metadata@v3
+      - name: merge once the checks pass
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR"

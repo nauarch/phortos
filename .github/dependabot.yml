@@ -1,5 +1,6 @@
 # Keeps what phortos builds with current: the GitHub Actions its workflows use, and its one Go
-# module dependency (go.yaml.in/yaml/v3, which reads the config file).
+# module dependency (go.yaml.in/yaml/v3, which reads the config file). Patch and minor updates
+# merge themselves once CI passes (workflows/dependabot.yml).
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -8,6 +9,8 @@ updates:
       interval: weekly
     open-pull-requests-limit: 3
     labels: [ci]
+    commit-message:
+      prefix: ci
 
   - package-ecosystem: gomod
     directory: /
@@ -15,3 +18,5 @@ updates:
       interval: weekly
     open-pull-requests-limit: 3
     labels: [build]
+    commit-message:
+      prefix: build
